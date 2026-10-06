@@ -1,0 +1,107 @@
+package frc.robot.subsystems;
+
+import java.lang.reflect.Method;
+import java.util.Dictionary;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Optional;
+import java.util.function.Supplier;
+import java.util.ArrayList;
+
+import choreo.auto.AutoChooser;
+import choreo.auto.AutoFactory;
+import choreo.auto.AutoRoutine;
+import org.wpilib.networktables.NetworkTableInstance;
+import  org.wpilib.smartdashboard.*;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.Subsystem;
+import org.wpilib.command2.SubsystemBase;
+import org.wpilib.command2.button.RobotModeTriggers;
+import frc.robot.Constants;
+import frc.robot.RobotContainer;
+
+public class AutoHandlingSubsystem extends SubsystemBase {
+    private final AutoFactory autoFactory;
+    private final AutoChooser chooser;
+    private final ArrayList<AutoRoutine> routineList;
+
+    public AutoHandlingSubsystem(CommandSwerveDrivetrain drive) {
+        autoFactory = new AutoFactory(drive::getPose, drive::resetPose, drive::followTrajectory,
+                Constants.AutonomousConstants.kEnableAllianceFlipping, drive);
+        chooser = new AutoChooser("uhhh ummm uhuhuhuh");
+        routineList = new ArrayList<AutoRoutine>();
+    }
+
+    public void setupAutoReflection(RobotContainer container, Subsystem... subsystems) {
+        // Basically Java has a feature where the types of objects can be treated as
+        // objects themselves.
+        // You can use this to get properties of the types of objects at runtime.
+        // This function iterates through; every function of every passed subsystem and
+        // selects those which
+        // take in an AutoFactory and return a Command (in the first for loop) and an
+        // AutoRoutine (in the second for loop)
+        // For each of these, it then (for the first for loop) binds a command with the
+        // name of the current method
+        // and the output of the method (which returns a command). For the second for
+        // loop,
+        // it does mostly the same thing except with AutoRoutines instead of commands.
+
+        // We make a list like this because it makes it possible to check the arguments
+        // of the Methods (for some reason. don't ask idk)
+        Class<?>[] factoryClass = { AutoFactory.class };
+        for (Subsystem s : subsystems) {
+            // Returns the type of the current subsystem. This will contain info abt it
+            Class<?> sType = s.getClass();
+            // Gets a list of methods in the class
+            Method[] methods = sType.getMethods();
+            for (Method m : methods) {
+                if (m.getReturnType() == Command.class) {
+                    try {
+                        autoFactory.bind(m.getName(), (Command) m.invoke(s, autoFactory));
+                    } catch (Exception e) {}
+                    try {
+                        autoFactory.bind(m.getName(), (Command) m.invoke(s));
+                    } catch (Exception e) {}
+                }
+            }
+        }
+        for (Method m : container.getClass().getMethods()) {
+            for (Class<?> c : m.getParameterTypes()) {
+                System.out.println(c.getName() + " is " + c);
+            }
+            if (m.getReturnType() == AutoRoutine.class) {
+                try {
+                    chooser.addRoutine(m.getName(), new Supplier<AutoRoutine>() {
+                        public AutoRoutine get() {
+                            AutoRoutine routine;
+                            try {
+                                routine = (AutoRoutine) m.invoke(container, autoFactory);
+                                routineList.add(routine);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                routine = autoFactory.newRoutine("fix me 🥺🥺🥺");
+                            }
+                            return routine;
+                        }
+                    });
+                } catch (Exception e) {
+                }
+            }
+        }
+
+    }
+
+    public void publishChooser() {
+       // SmartDashboard.putData("Auto Chooser", chooser);
+    }
+
+    public Command getAutonomousCommand() {
+        return chooser.selectedCommand();
+    }
+
+    public void resetRoutines() {
+        for (AutoRoutine routine : routineList) {
+            routine.reset();
+        }
+    }
+}
