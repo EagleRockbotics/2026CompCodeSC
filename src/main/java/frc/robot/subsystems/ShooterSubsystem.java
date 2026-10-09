@@ -32,7 +32,7 @@ import org.wpilib.command2.WaitCommand;
 import org.wpilib.command2.button.RobotModeTriggers;
 import org.wpilib.command2.button.Trigger;
 import frc.robot.Constants;
-import frc.robot.LimelightHelpers;
+//import frc.robot.LimelightHelpers;
 import org.wpilib.math.kinematics.ChassisVelocities;
 import org.wpilib.networktables.BooleanPublisher;
 import org.wpilib.networktables.DoublePublisher;
@@ -52,11 +52,12 @@ import com.ctre.phoenix6.controls.StrobeAnimation;
 import com.ctre.phoenix6.controls.TwinkleAnimation;
 import com.ctre.phoenix6.signals.RGBWColor;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 
 public class ShooterSubsystem extends SubsystemBase {
-  private final SparkFlex m_driveMotor = new SparkFlex(Constants.CANPortConstants.portOne,Constants.ShooterConstants.kDriveMotorId, MotorType.kBrushless);
+  private final SparkFlex m_driveMotor = new SparkFlex(Constants.CANPortConstants.portTwo,Constants.ShooterConstants.kDriveMotorId, MotorType.kBrushless);
   private final SparkFlexConfig m_motorConfig = new SparkFlexConfig();
   private final CommandSwerveDrivetrain m_drivetrain;
   private final LimelightSubsystem m_limelightSubsystem;
@@ -68,8 +69,10 @@ public class ShooterSubsystem extends SubsystemBase {
   private final boolean useShooterOffsetCompensation = true; // if true, shooter is aimed at hub; if false, robot is aimed at hub
   private final boolean useZippyZoomMath = false; // takes priority over useRobotVelocityCompensation (they're mutually exclusive)
 
-  private final SparkMax m_indexerBeltMotor = new SparkMax(Constants.CANPortConstants.portOne,Constants.ShooterConstants.kIndexerBeltMotorId, MotorType.kBrushed);
-  private final SparkMax m_indexerRollerMotor = new SparkMax(Constants.CANPortConstants.portOne,Constants.ShooterConstants.kIndexerRollerMotorId, MotorType.kBrushed);
+  private final SparkMax m_indexerBeltMotor = new SparkMax(Constants.CANPortConstants.portTwo,Constants.ShooterConstants.kIndexerBeltMotorId, MotorType.kBrushed);
+  private final SparkMax m_indexerRollerMotor = new SparkMax(Constants.CANPortConstants.portTwo,Constants.ShooterConstants.kIndexerRollerMotorId, MotorType.kBrushed);
+  
+
 
   public Trigger autoAimTeleopTrigger = new Trigger(() -> {return false;});
   public Trigger manualAimTeleopTrigger = new Trigger(() -> {return false;});
@@ -87,10 +90,13 @@ public class ShooterSubsystem extends SubsystemBase {
   @SuppressWarnings("removal")
   public ShooterSubsystem(CommandSwerveDrivetrain drivetrain, LimelightSubsystem limelight, CANdleSubsystem CANdle) {
     m_motorConfig.closedLoop.p(Constants.ShooterConstants.kP)
+      .p(Constants.ShooterConstants.kP)
       .i(Constants.ShooterConstants.kI)
       .d(Constants.ShooterConstants.kD)
-      .velocityFF(Constants.ShooterConstants.kF)
-      .iZone(0.5);
+      //.velocityFF(Constants.ShooterConstants.kF)
+      .iZone(0.5)
+      .feedForward
+        .kV(Constants.ShooterConstants.kF);
     m_motorConfig.voltageCompensation(11);
     m_motorConfig.idleMode(IdleMode.kCoast);
     m_driveMotor.configure(m_motorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
@@ -106,6 +112,7 @@ public class ShooterSubsystem extends SubsystemBase {
     return currentPosition.getDistance(Constants.FieldConstants.kBlueHubPosition); 
   }
 
+  
   public Optional<Pose2d> getCurrentPose() {
     Optional<Pose2d> pose;
     if (forceLimelight) {

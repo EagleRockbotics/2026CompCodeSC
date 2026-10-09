@@ -43,9 +43,9 @@ import frc.robot.Constants;
 public class ElevatorSubsystem extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
 
-  private final CANrange distanceSensor = new CANrange(6, Constants.CANBusConstants.mainBus);
+  private final CANrange distanceSensor = new CANrange(6, TunerConstants.kSwerveCANBus);
 
-  private final SparkMax m_motor = new SparkMax(Constants.CANPortConstants.portOne,Constants.ElevatorConstants.kElevatorMotorID, SparkLowLevel.MotorType.kBrushless);
+  private final SparkMax m_motor = new SparkMax(Constants.CANPortConstants.portTwo,Constants.ElevatorConstants.kElevatorMotorID, SparkLowLevel.MotorType.kBrushless);
   private final SparkBaseConfig m_motorConfig = new SparkMaxConfig().idleMode(IdleMode.kCoast).voltageCompensation(11);
   private final PIDController m_controller = new PIDController(Constants.ElevatorConstants.kP, Constants.ElevatorConstants.kI, Constants.ElevatorConstants.kD);
 

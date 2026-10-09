@@ -149,14 +149,10 @@ public final class Constants {
   }
 
   public static class CANPortConstants {
-    public static final CANPort portOne = CANPort.CAN_D12;
-    public static final CANPort portTwo = CANPort.CAN_D13;
+    public static final CANPort portOne = CANPort.CAN_D0;
+    public static final CANPort portTwo = CANPort.CAN_D1;
   }
 
-  public static class CANBusConstants {
-    public static final CANBus mainBus = new CANBus(Constants.CANPortConstants.portOne);
-
-
-  }
+  
  
 }

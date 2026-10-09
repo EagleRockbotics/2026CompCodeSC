@@ -2,6 +2,8 @@
 
 package frc.robot;
 
+
+import org.wpilib.math.util.UnitConversions;
 import org.wpilib.networktables.DoubleArrayEntry;
 import org.wpilib.networktables.NetworkTable;
 import org.wpilib.networktables.NetworkTableEntry;
@@ -13,7 +15,8 @@ import org.wpilib.math.geometry.Pose2d;
 import org.wpilib.math.geometry.Pose3d;
 import org.wpilib.math.geometry.Rotation2d;
 import org.wpilib.math.geometry.Translation3d;
-import org.wpilib.math.util.Units;
+import org.wpilib.units.Units;
+
 import org.wpilib.math.geometry.Rotation3d;
 import org.wpilib.math.geometry.Translation2d;
 
@@ -135,7 +138,7 @@ public class LimelightHelpers {
         }
 
     }
-
+    
     /**
      * Represents an AprilTag/Fiducial Target Result extracted from JSON Output
      */
@@ -636,9 +639,9 @@ public class LimelightHelpers {
         }
         return new Pose3d(
             new Translation3d(inData[0], inData[1], inData[2]),
-            new Rotation3d(Units.degreesToRadians(inData[3]), Units.degreesToRadians(inData[4]),
-                    Units.degreesToRadians(inData[5])));
-    }
+            new Rotation3d((inData[3]* Math.PI / 180.0),(inData[4]* Math.PI / 180.0),
+                    (inData[5])* Math.PI / 180.0));
+    }   
 
     /**
      * Takes a 6-length array of pose data and converts it to a Pose2d object.
@@ -654,7 +657,7 @@ public class LimelightHelpers {
             return new Pose2d();
         }
         Translation2d tran2d = new Translation2d(inData[0], inData[1]);
-        Rotation2d r2d = new Rotation2d(Units.degreesToRadians(inData[5]));
+        Rotation2d r2d = new Rotation2d((inData[5])* Math.PI / 180.0);
         return new Pose2d(tran2d, r2d);
     }
 
@@ -670,9 +673,9 @@ public class LimelightHelpers {
         result[0] = pose.getTranslation().getX();
         result[1] = pose.getTranslation().getY();
         result[2] = pose.getTranslation().getZ();
-        result[3] = Units.radiansToDegrees(pose.getRotation().getX());
-        result[4] = Units.radiansToDegrees(pose.getRotation().getY());
-        result[5] = Units.radiansToDegrees(pose.getRotation().getZ());
+        result[3] = (pose.getRotation().getX())* Math.PI / 180.0;
+        result[4] = (pose.getRotation().getY())* Math.PI / 180.0;
+        result[5] = (pose.getRotation().getZ())* Math.PI / 180.0;
         return result;
     }
 
@@ -689,9 +692,9 @@ public class LimelightHelpers {
         result[0] = pose.getTranslation().getX();
         result[1] = pose.getTranslation().getY();
         result[2] = 0;
-        result[3] = Units.radiansToDegrees(0);
-        result[4] = Units.radiansToDegrees(0);
-        result[5] = Units.radiansToDegrees(pose.getRotation().getRadians());
+        result[3] = (0) * 180.0 / Math.PI;
+        result[4] = (0) * 180.0 / Math.PI;
+        result[5] = (pose.getRotation().getRadians()) * 180.0 / Math.PI;
         return result;
     }
 

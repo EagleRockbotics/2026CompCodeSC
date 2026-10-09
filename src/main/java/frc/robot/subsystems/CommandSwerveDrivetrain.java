@@ -460,9 +460,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
      * @param timestampSeconds The timestamp of the pose in seconds.
      * @return The pose at the given timestamp (or Optional.empty() if the buffer is empty).
      */
+    /** Check if conversion needed at all */
     @Override
     public Optional<Pose2d> samplePoseAt(double timestampSeconds) {
-        return super.samplePoseAt((Utils.getCurrentTimeSeconds()-timestampSeconds)*Utils.getMonotonicTimeSeconds());
+        return super.samplePoseAt(timestampSeconds);
     }
 }
 

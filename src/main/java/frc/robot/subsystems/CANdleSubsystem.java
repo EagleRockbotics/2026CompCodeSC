@@ -19,10 +19,11 @@ public class CANdleSubsystem extends SubsystemBase {
   private final CANdle m_CANdle;
 
   public CANdleSubsystem() {
-    m_CANdle = new CANdle(42, Constants.CANBusConstants.mainBus);
+    m_CANdle = new CANdle(42,TunerConstants.kSwerveCANBus);
   }
 
   public synchronized void setState(ControlRequest animation) {
     m_CANdle.setControl(animation);
   }
-}
+} 
+

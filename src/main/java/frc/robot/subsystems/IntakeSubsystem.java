@@ -45,7 +45,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   private final SparkFlexConfig m_motorConfig = new SparkFlexConfig();
 
-  private final CANcoder m_RightEncoder = new CANcoder(Constants.IntakeConstants.k_EncoderID, Constants.CANBusConstants.mainBus);
+  private final CANcoder m_RightEncoder = new CANcoder(Constants.IntakeConstants.k_EncoderID, TunerConstants.kSwerveCANBus);
   private final ArmFeedforward m_armFeed = new ArmFeedforward(Constants.IntakeConstants.k_Ks, Constants.IntakeConstants.k_Kg, Constants.IntakeConstants.k_Kv);
   public Trigger runIntakeTrigger = new Trigger(() -> {return false;});
   public Trigger reverseIntakeTrigger = new Trigger(() -> {return false;});

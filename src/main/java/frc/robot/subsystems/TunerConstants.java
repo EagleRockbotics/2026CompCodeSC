@@ -16,6 +16,9 @@ import com.ctre.phoenix6.swerve.SwerveModuleConstants.ClosedLoopOutputType;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.DriveMotorArrangement;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.SteerFeedbackType;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.SteerMotorArrangement;
+
+import frc.robot.Constants;
+
 import com.ctre.phoenix6.swerve.SwerveModuleConstantsFactory;
 
 import org.wpilib.math.linalg.Matrix;
@@ -76,7 +79,7 @@ public class TunerConstants {
 
     // CAN bus that the devices are located on;
     // All swerve devices must share the same CAN bus
-    public static final CANBus kCANBus = new CANBus("canivore");
+    public static final CANBus kSwerveCANBus = new CANBus(Constants.CANPortConstants.portTwo); //canivore as ehere before
 
     // Theoretical free speed (m/s) at 12 V applied output;
     // This needs to be tuned to your individual robot
@@ -103,7 +106,7 @@ public class TunerConstants {
     private static final Voltage kDriveFrictionVoltage = Volts.of(0.2);
 
     public static final SwerveDrivetrainConstants DrivetrainConstants = new SwerveDrivetrainConstants()
-            //.withCANBusName(kCANBus.getName())
+            .withNetwork(kSwerveCANBus)
             .withPigeon2Id(kPigeonId)
             .withPigeon2Configs(pigeonConfigs);
 

@@ -3,7 +3,9 @@ plugins {
     id "application"
     id ("org.wpilib.GradleRIO") version "2027.0.0-alpha-7"
 }
-
+wpi.maven.useLocal = false
+wpi.maven.useDevelopment = true
+wpi.versions.wpilibVersion = '2027.+'
 java {
     sourceCompatibility = JavaVersion.VERSION_25
     targetCompatibility = JavaVersion.VERSION_25
@@ -78,6 +80,9 @@ dependencies {
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.1'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.15.2'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.15.2'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.15.2'
 }
 
 test {

@@ -66,6 +66,7 @@ import org.wpilib.command2.CommandScheduler;
 import org.wpilib.command2.Commands;
 import org.wpilib.command2.SubsystemBase;
 import org.wpilib.command2.button.CommandGamepad;
+import org.wpilib.command2.button.CommandXboxController;
 import org.wpilib.command2.button.RobotModeTriggers;
 import org.wpilib.command2.button.Trigger;
 import org.wpilib.command2.sysid.SysIdRoutine.Direction;
@@ -118,14 +119,15 @@ public class RobotContainer {
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
+   //@SuppressWarnings("WPILib.NoDiscard")
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
     // TODO: Whenever you make a new subsytem, put it in this function.
     // m_autoHandler.setupAutoReflection(this, m_drivetrain, m_autoHandler);
     // m_autoHandler.publishChooser();
-
-    resetGyro();
+    //@SuppressWarnings("WPILib.NoDiscard")@SuppressWarnings("WPILib.NoDiscard");
+    m_drivetrain.resetGyro();
     m_drivetrain.resetPose(Pose2d.ZERO);
     }
 
@@ -179,7 +181,7 @@ public class RobotContainer {
       m_drivetrain.resetGyro();
     }));
 
-    // joystick.rightTrigger().and(RobotModeTriggers.test()).whileTrue(Commands.sequence(
+    // joystick.rightTrigger().and(RobotModeTrigq13gers.test()).whileTrue(Commands.sequence(
     //   Commands.runOnce(() -> {
     //     // m_drivetrain.resetPose(m_shooterSubsystem.getCurrentPose().get());
     //   }), 
